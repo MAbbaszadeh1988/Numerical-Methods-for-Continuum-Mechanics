@@ -1,0 +1,34 @@
+%=========================================================
+% 1D Heat Problem:  u_t - u_xx = f  on (0,1)x(0,1)
+% CN finite difference method
+%=========================================================
+clear
+clc
+close all
+%% Exact solution and source term
+u = @(x,t) exp(t).*sin(x);
+f = @(x,t) 2.*exp(t).*sin(x);
+%%
+a = 0;
+b = 1;
+h = 1/10;
+N = (b-a)/h;
+t0 = 0;
+T = 1;
+dt = 1e-2;
+M = (T-t0)/dt;
+s = dt/(2*h^2);
+x = (a:h:b)';
+t = (t0:dt:T)';
+%% Initial condition
+U = u(x,0);
+%% Time loop
+s = dt/(h^2);
+for n=1:M
+    tn = n*dt
+    U(2:end-1) = s.*U(3:end) + (1-2*s).*U(2:end-1) + s.*U(1:end-2) + dt.*f(x(2:end-1),tn);
+end
+norm(U-u(x,T),inf)
+plot(x,U,'o',x,u(x,T),'.-','LineWidth',2)
+xlabel('x')
+ylabel('Exact and Approximate Solution')
