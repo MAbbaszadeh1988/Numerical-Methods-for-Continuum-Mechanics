@@ -1,0 +1,59 @@
+%% Least Square Method
+clear
+clc
+close all
+%%
+M0 = 1;
+EI = 1;
+L0 = 0;
+L = 1;
+n = 5;
+h = (L-L0)/n;
+x = (L0:h:L)';
+%%
+u = @(x) -(M0/(2*EI)).*x.*(L-x);
+%% Basis function
+phi    = @(x,j) x.^j;
+dxxphi = @(x,j) j.*(j-1).*(x.^(j-2));
+%% Interpolation Matrix
+A = zeros(n+1);
+for i=1:n+1
+    A(i,:) = phi(x(i),(0:n));
+end
+%% Second-Differential Matrix
+%% Analytical computation of M_ij = ∫ phi_i(x) * phi_j(x) dx from 0 to 1
+D = zeros(n+1);
+for i = 1:n+1
+    for j = 1:n+1
+        if i + j > 3
+            D(i,j) = i*(i-1)*j*(j-1) / (i + j - 3);
+        else
+            % Handle cases where integral diverges at 0 (i+j <= 3)
+            % For i=1,j=1: phi = 0, so integral = 0
+            % For i=1,j=2: phi_i=0, phi_j=2, so integral = 0
+            % For i=2,j=2: phi=2, integral = 4∫x^0 dx = 4
+            if i == 2 && j == 2
+                D(i,j) = 4;  % ∫ 2*2 dx from 0 to 1 = 4
+            else
+                D(i,j) = 0;
+            end
+        end
+    end
+end
+% Boundary conditions
+D(1,:) = A(1,:);
+D(end,:) = A(end,:);
+%% Right-hand side
+F = zeros(n+1,1);
+for j = 1:n+1
+    F(j) = (M0/EI)*(j-1);
+end
+F(1)   = 0;
+F(end) = 0;
+U = D\F;
+%% Plot
+plot(x,A*U,'r','LineWidth',2)
+hold on
+plot(x,u(x),'bo')
+legend('Collocation','Exact')
+grid on
