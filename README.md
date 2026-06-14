@@ -74,6 +74,18 @@ Students are welcome to suggest improvements or report issues via GitHub Issues 
 
 This project is licensed under the MIT License – see the LICENSE file for details.
 
+📜 Reference
+
+@misc{bengzon2013finite,
+  title={The Finite Element Method: Theory, Implementation, and Applications},
+  author={Bengzon, Fredrik and Larson, Mats G},
+  year={2013},
+  publisher={Springer Berlin}
+}
+
+
+
+
 👨‍🏫 Instructor
 
 Mostafa Abbaszadeh
